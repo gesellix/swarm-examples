@@ -1,0 +1,46 @@
+version: '2.3'
+
+services:
+  registry:
+    image: 'registry:2'
+    ports:
+      - 5000:5000
+    volumes:
+      - registry-data:/var/lib/registry
+    restart: on-failure
+
+  registry-mirror:
+    image: 'registry:2'
+    environment:
+      REGISTRY_PROXY_REMOTEURL: https://registry-1.docker.io
+    volumes:
+      - registry-mirror-data:/var/lib/registry
+    restart: on-failure
+
+  worker1:
+    hostname: worker1
+    image: 'docker:${DOCKER_ENGINE_VERSION:-edge-dind}'
+    privileged: true
+    command: ['--insecure-registry=registry:5000', '--registry-mirror=http://registry-mirror:5000']
+    labels:
+      de.gesellix.swarm.node: "worker"
+
+  worker2:
+    hostname: worker2
+    image: 'docker:${DOCKER_ENGINE_VERSION:-edge-dind}'
+    privileged: true
+    command: ['--insecure-registry=registry:5000', '--registry-mirror=http://registry-mirror:5000']
+    labels:
+      de.gesellix.swarm.node: "worker"
+
+  worker3:
+    hostname: worker3
+    image: 'docker:${DOCKER_ENGINE_VERSION:-edge-dind}'
+    privileged: true
+    command: ['--insecure-registry=registry:5000', '--registry-mirror=http://registry-mirror:5000']
+    labels:
+      de.gesellix.swarm.node: "worker"
+
+volumes:
+  registry-data:
+  registry-mirror-data:

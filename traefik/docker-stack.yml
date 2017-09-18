@@ -1,0 +1,48 @@
+---
+version: "3.4"
+
+services:
+  proxy:
+    image: "traefik:${TRAEFIK_TAG:-latest}"
+    command: --web --docker --docker.domain=swarm.local --docker.swarmmode --docker.watch
+    networks:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+#      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+
+  whoami:
+    image: emilevauge/whoami:latest
+    networks:
+      - app
+    deploy:
+      placement:
+        constraints:
+          - node.role==worker
+      replicas: 3
+      labels:
+        - "traefik.port=80"
+        - "traefik.docker.network=app"
+        - "traefik.frontend.rule=Host:localhost"
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+networks:
+  app:
+    driver: overlay

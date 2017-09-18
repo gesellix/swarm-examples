@@ -1,0 +1,56 @@
+---
+version: "3.4"
+
+services:
+  proxy:
+    image: "${NGINX_IMAGE:-nginx:alpine}"
+    networks:
+      - app
+    ports:
+      - "8080:80"
+      - "8443:443"
+    deploy:
+      placement:
+        constraints:
+          - node.role==worker
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+    configs:
+      - source: https.conf
+        target: /etc/nginx/conf.d/https.conf
+    secrets:
+      - site.key
+      - site.crt
+
+  whoami:
+    image: emilevauge/whoami:latest
+    networks:
+      - app
+    deploy:
+      placement:
+        constraints:
+          - node.role==worker
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+networks:
+  app:
+    driver: overlay
+
+configs:
+  https.conf:
+    file: ./https-backend.conf
+
+secrets:
+  site.key:
+    file: ./cert/site.key
+  site.crt:
+    file: ./cert/site.crt

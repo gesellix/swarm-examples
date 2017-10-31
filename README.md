@@ -1,6 +1,6 @@
 # Docker Swarm: Beispiele
 
-Beispiel-Code zum Artikel "Continuous Deployment mit Docker Swarm" im Java Magazin.
+Beispiel-Code zum Artikel "Continuous Deployment mit Docker Swarm" im [Java Magazin 12.17](https://entwickler.de/java-magazin/java-magazin-12-17-579817649.html).
 
 ## Überblick
 

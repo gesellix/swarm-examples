@@ -2,6 +2,8 @@
 
 Beispiel-Code zum Artikel "Continuous Deployment mit Docker Swarm" im [Java Magazin 12.17](https://entwickler.de/java-magazin/java-magazin-12-17-579817649.html).
 
+_Update_: Der komplette Artikel ist jetzt unter [jaxenter.de](https://jaxenter.de/docker-swarm-einfuehrung-65263) online lesbar.
+
 ## Überblick
 
 Die Beispiele setzen voraus, dass die lokale Docker Engine als Swarm Manager fungiert
